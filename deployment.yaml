@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ybuggy-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ybuggy
+  template:
+    metadata:
+      labels:
+        app: ybuggy
+    spec:
+      containers:
+      - name: ybuggy
+        image: 108415871555.dkr.ecr.us-west-2.amazonaws.com/ydocker
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+# service type loadbalancer       
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ybuggy
+    k8s-app: ybuggy
+  name: ybuggy
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  type: LoadBalancer
+  selector:
+    app: ybuggy
